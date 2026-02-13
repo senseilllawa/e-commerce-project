@@ -1,5 +1,5 @@
 const API_CONFIG = {
-  baseURL: 'https://jacquiline-unpublished-boisterously.ngrok-free.dev', 
+  baseURL: 'https://e-commerce-project-8n95.onrender.com', 
   timeout: 10000,
 };
 
