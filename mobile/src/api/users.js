@@ -23,7 +23,7 @@ export const usersAPI = {
 
   getUsers: async (params = {}) => {
     try {
-      const response = await apiClient.get('/api/v1/users', { params });
+      const response = await apiClient.get('/api/v1/admin/users', { params });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -32,7 +32,7 @@ export const usersAPI = {
 
   getUser: async (id) => {
     try {
-      const response = await apiClient.get(`/api/v1/users/${id}`);
+      const response = await apiClient.get(`/api/v1/admin/users/${id}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -41,7 +41,7 @@ export const usersAPI = {
 
   updateUser: async (id, userData) => {
     try {
-      const response = await apiClient.put(`/api/v1/users/${id}`, {
+      const response = await apiClient.put(`/api/v1/admin/users/${id}`, {
         user: userData,
       });
       return response.data;
@@ -52,7 +52,7 @@ export const usersAPI = {
 
   deleteUser: async (id) => {
     try {
-      const response = await apiClient.delete(`/api/v1/users/${id}`);
+      const response = await apiClient.delete(`/api/v1/admin/users/${id}`);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
