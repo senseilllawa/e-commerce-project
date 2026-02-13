@@ -2,9 +2,10 @@ import apiClient from './client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const authAPI = {
+  // Регистрация нового аккаунта
   signUp: async (userData) => {
     try {
-      const response = await apiClient.post('/api/v1/users/sign_up', {
+      const response = await apiClient.post('/users/sign_up', {
         user: userData,
       });
 
@@ -20,9 +21,10 @@ export const authAPI = {
     }
   },
 
+  // Вход в систему
   signIn: async (email, password) => {
     try {
-      const response = await apiClient.post('/api/v1/users/sign_in', {
+      const response = await apiClient.post('/users/sign_in', {
         user: { email, password },
       });
       
@@ -38,9 +40,10 @@ export const authAPI = {
     }
   },
 
+  // Выход из аккаунта
   signOut: async () => {
     try {
-      await apiClient.delete('/api/v1/users/sign_out');
+      await apiClient.delete('/users/sign_out');
     } catch (error) {
       console.error('Sign out error:', error);
     } finally {
@@ -49,6 +52,7 @@ export const authAPI = {
     }
   },
 
+  // Проверка состояния авторизации при запуске приложения
   checkAuth: async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
