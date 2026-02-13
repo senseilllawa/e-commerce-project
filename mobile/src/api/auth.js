@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const authAPI = {
   signUp: async (userData) => {
     try {
-      const response = await apiClient.post('/users/sign_up', {
+      const response = await apiClient.post('/api/v1/users/sign_up', {
         user: userData,
       });
 
@@ -22,7 +22,7 @@ export const authAPI = {
 
   signIn: async (email, password) => {
     try {
-      const response = await apiClient.post('/users/sign_in', {
+      const response = await apiClient.post('/api/v1/users/sign_in', {
         user: { email, password },
       });
       
@@ -40,7 +40,7 @@ export const authAPI = {
 
   signOut: async () => {
     try {
-      await apiClient.delete('/users/sign_out');
+      await apiClient.delete('/api/v1/users/sign_out');
     } catch (error) {
       console.error('Sign out error:', error);
     } finally {
