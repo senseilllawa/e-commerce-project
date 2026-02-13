@@ -1,73 +1,40 @@
-import apiClient from './client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+Rails.application.routes.draw do
+  # Devise routes для аутентификации (JWT/Sessions)
+  devise_for :users, path: 'users', path_names: {
+    sign_in: 'sign_in',
+    sign_out: 'sign_out',
+    registration: 'sign_up'
+  }, controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations'
+  }
 
-export const authAPI = {
-  // Регистрация нового аккаунта
-  signUp: async (userData) => {
-    try {
-      const response = await apiClient.post('/users/sign_up', {
-        user: userData,
-      });
+  # Основные API роуты
+  namespace :api do
+    namespace :v1 do
+      # Управление профилем текущего пользователя
+      resource :profile, only: [:show, :update]
 
-      const token = response.headers.authorization?.split(' ')[1];
-      if (token) {
-        await AsyncStorage.setItem('authToken', token);
-        await AsyncStorage.setItem('currentUser', JSON.stringify(response.data.data));
-      }
-      
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
+      # Управление товарами (публичный просмотр + админские действия)
+      resources :items
 
-  // Вход в систему
-  signIn: async (email, password) => {
-    try {
-      const response = await apiClient.post('/users/sign_in', {
-        user: { email, password },
-      });
-      
-      const token = response.headers.authorization?.split(' ')[1];
-      if (token) {
-        await AsyncStorage.setItem('authToken', token);
-        await AsyncStorage.setItem('currentUser', JSON.stringify(response.data.data));
-      }
-      
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
+      # Заказы обычного пользователя (его личная история и создание)
+      resources :orders, only: [:index, :show, :create]
 
-  // Выход из аккаунта
-  signOut: async () => {
-    try {
-      await apiClient.delete('/users/sign_out');
-    } catch (error) {
-      console.error('Sign out error:', error);
-    } finally {
-      await AsyncStorage.removeItem('authToken');
-      await AsyncStorage.removeItem('currentUser');
-    }
-  },
+      # --- Админская панель ---
+      namespace :admin do
+        # Статистика продаж и общие показатели
+        resource :dashboard, only: [:show]
+        
+        # Управление пользователями (роли, пароли, удаление)
+        resources :users, only: [:index, :show, :update, :destroy]
+        
+        # Глобальное управление заказами всех пользователей (смена статусов)
+        resources :orders, only: [:index, :show, :update]
+      end
+    end
+  end
 
-  // Проверка состояния авторизации при запуске приложения
-  checkAuth: async () => {
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      const userJson = await AsyncStorage.getItem('currentUser');
-      
-      if (token && userJson) {
-        return {
-          isAuthenticated: true,
-          user: JSON.parse(userJson),
-        };
-      }
-      
-      return { isAuthenticated: false, user: null };
-    } catch (error) {
-      return { isAuthenticated: false, user: null };
-    }
-  },
-};
+  # Health check для проверки работоспособности сервера
+  get 'health', to: proc { [200, {}, ['OK']] }
+end
