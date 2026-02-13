@@ -1,10 +1,9 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import API_CONFIG from './config';
 
 const apiClient = axios.create({
-  baseURL: API_CONFIG.baseURL,
-  timeout: API_CONFIG.timeout,
+  baseURL: 'https://e-commerce-project-8n95.onrender.com/api/v1', 
+  timeout: 15000, 
   headers: {
     'Content-Type': 'application/json',
   },
