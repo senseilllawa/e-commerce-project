@@ -3,7 +3,7 @@
     "name": "E-commerce",
     "slug": "ecommerce-mobile",
     "version": "1.0.0",
-    "sdkVersion": "54.0.0", 
+    "sdkVersion": "54.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -32,6 +32,18 @@
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a7cef663-1392-44ec-8975-7d262005d5f3"
+      }
+    },
+    "owner": "senseilllawa",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a7cef663-1392-44ec-8975-7d262005d5f3"
+    }
   }
 }

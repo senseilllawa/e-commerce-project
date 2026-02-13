@@ -2,17 +2,19 @@ import apiClient from './client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const authAPI = {
-  // Регистрация нового аккаунта
   signUp: async (userData) => {
     try {
       const response = await apiClient.post('/users/sign_up', {
         user: userData,
+      }, {
+        headers: { 'Accept': 'application/json' }
       });
 
       const token = response.headers.authorization?.split(' ')[1];
       if (token) {
         await AsyncStorage.setItem('authToken', token);
-        await AsyncStorage.setItem('currentUser', JSON.stringify(response.data.data));
+        const userDataToStore = response.data.data || response.data;
+        await AsyncStorage.setItem('currentUser', JSON.stringify(userDataToStore));
       }
       
       return response.data;
@@ -21,17 +23,19 @@ export const authAPI = {
     }
   },
 
-  // Вход в систему
   signIn: async (email, password) => {
     try {
       const response = await apiClient.post('/users/sign_in', {
         user: { email, password },
+      }, {
+        headers: { 'Accept': 'application/json' }
       });
       
       const token = response.headers.authorization?.split(' ')[1];
       if (token) {
         await AsyncStorage.setItem('authToken', token);
-        await AsyncStorage.setItem('currentUser', JSON.stringify(response.data.data));
+        const userDataToStore = response.data.data || response.data;
+        await AsyncStorage.setItem('currentUser', JSON.stringify(userDataToStore));
       }
       
       return response.data;
@@ -40,19 +44,17 @@ export const authAPI = {
     }
   },
 
-  // Выход из аккаунта
   signOut: async () => {
     try {
       await apiClient.delete('/users/sign_out');
     } catch (error) {
-      console.error('Sign out error:', error);
+      // Оставляем только технический лог, если нужно для дебага
     } finally {
       await AsyncStorage.removeItem('authToken');
       await AsyncStorage.removeItem('currentUser');
     }
   },
 
-  // Проверка состояния авторизации при запуске приложения
   checkAuth: async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
@@ -64,9 +66,8 @@ export const authAPI = {
           user: JSON.parse(userJson),
         };
       }
-      
       return { isAuthenticated: false, user: null };
-    } catch (error) {
+    } catch {
       return { isAuthenticated: false, user: null };
     }
   },
